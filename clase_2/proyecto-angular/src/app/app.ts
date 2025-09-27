@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 
 @Component({
   selector: 'app-root',
@@ -6,6 +6,4 @@ import { Component } from '@angular/core';
   standalone: false,
   styleUrl: './app.css',
 })
-export class AppComponent {
-  title = 'proyecto-angular';
-}
+export class App {}

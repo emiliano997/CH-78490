@@ -1,14 +1,14 @@
-import { NgModule } from '@angular/core';
+import { NgModule, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing-module';
-import { AppComponent } from './app';
+import { App } from './app';
 import { UsersModule } from './users/users-module';
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [App],
   imports: [BrowserModule, AppRoutingModule, UsersModule],
-  providers: [],
-  bootstrap: [AppComponent],
+  providers: [provideBrowserGlobalErrorListeners()],
+  bootstrap: [App],
 })
 export class AppModule {}
