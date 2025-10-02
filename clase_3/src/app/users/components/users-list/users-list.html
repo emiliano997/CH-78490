@@ -1,0 +1,7 @@
+<h2>Lista de usuarios</h2>
+
+<ul>
+  @for(user of users; track $index) {
+  <li>{{ user.nombre }} {{ user.apellido }}</li>
+  }
+</ul>

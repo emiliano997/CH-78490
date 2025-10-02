@@ -1,0 +1,24 @@
+<h1>Users</h1>
+
+<p>Este es el componente de usuarios</p>
+
+<h2>Datos del usuario</h2>
+
+<p>Nombre: {{ nombre }}</p>
+<p>Apellido: {{ apellido }}</p>
+
+@if (edad < 20) {
+<p>La edad es mayor a 20</p>
+} @else {
+<p>La edad es menor o igual a 20</p>
+} @switch (edad) { @case (20) {
+<p style="color: red">La edad es 20</p>
+} @case (25) {
+<p style="color: green">La edad es 25</p>
+} @default {
+<p style="color: blue">La edad es {{ edad }}</p>
+} }
+
+<app-users-list [users]="usersList"></app-users-list>
+
+<app-user-form (sendUser)="onAddUser($event)"></app-user-form>
