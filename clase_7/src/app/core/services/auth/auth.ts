@@ -1,19 +1,40 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { API_URL } from '../../utils/constants';
+import { User } from './model/User';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  login(email: string, password: string) {
-    if (email !== 'admin@gmail.com' || password !== '1234') {
-      throw new Error('Email y contraseña inválidos');
-    }
+  private usersUrl = `${API_URL}/users`;
+  user: User | null = null;
 
-    localStorage.setItem('token', 'admin@gmail.com');
+  constructor(private http: HttpClient, private router: Router) {}
+
+  login(email: string, password: string) {
+    this.http.get<User[]>(this.usersUrl).subscribe((users) => {
+      const user = users.find((user) => user.email === email);
+
+      if (!user) {
+        throw new Error('Email es inválido');
+      }
+
+      if (user.password !== password) {
+        throw new Error('Contraseña es inválida');
+      }
+
+      localStorage.setItem('token', user.email);
+      this.user = user;
+      this.router.navigate(['dashboard']);
+    });
   }
 
   logout() {
     localStorage.removeItem('token');
+    this.user = null;
+    this.router.navigate(['login']);
   }
 
   isAuthenticated() {
@@ -23,6 +44,9 @@ export class AuthService {
       return false;
     }
 
-    return token === 'admin@gmail.com';
+    const isAuthenticated = token === this.user?.email;
+    console.log(isAuthenticated);
+
+    return isAuthenticated;
   }
 }
