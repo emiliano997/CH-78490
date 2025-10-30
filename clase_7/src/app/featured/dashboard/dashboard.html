@@ -1,0 +1,31 @@
+<mat-drawer-container class="drawer-container" autosize>
+  <mat-drawer #drawer class="sidenav" mode="side">
+    <h4>Platform Learning</h4>
+
+    <mat-nav-list>
+      @for (item of listItems; track $index) {
+      <a mat-list-item [routerLink]="item.url">
+        <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
+        <span matListItemLine>{{ item.name }}</span>
+      </a>
+      }
+    </mat-nav-list>
+  </mat-drawer>
+
+  <div>
+    <mat-toolbar>
+      <button
+        mat-icon-button
+        class="icon text-white"
+        aria-label="Example icon-button with menu icon"
+        (click)="drawer.toggle()"
+      >
+        <mat-icon>menu</mat-icon>
+      </button>
+    </mat-toolbar>
+
+    <div class="main-content">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</mat-drawer-container>
