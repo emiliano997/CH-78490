@@ -3,11 +3,11 @@ import { Injectable } from '@angular/core';
 import { API_URL } from '../../utils/constants';
 import { User } from './model/User';
 import { Router } from '@angular/router';
-import { firstValueFrom, Observable, of } from 'rxjs';
+import { map, Observable, of } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { RootState } from '../../store';
 import { setAuthUser } from '../../store/auth/auth.actions';
-import { map } from 'rxjs/operators';
+import { selectUser } from '../../store/auth/auth.selector';
 
 @Injectable({
   providedIn: 'root',
@@ -17,36 +17,35 @@ export class AuthService {
   user$: Observable<any>;
 
   constructor(private http: HttpClient, private router: Router, private store: Store<RootState>) {
-    this.user$ = this.store.select((state) => state.auth.user);
+    // this.user$ = this.store.select((state) => state.auth.user);
+    this.user$ = this.store.select(selectUser);
 
     const token = localStorage.getItem('token');
 
     if (token) {
       const [email, password] = token.split('&');
-      const user = this.login(email, password);
-
-      this.store.dispatch(setAuthUser({ payload: user }));
+      this.login(email, password).subscribe((user) => {
+        this.store.dispatch(setAuthUser({ payload: user }));
+      });
     }
   }
 
   login(email: string, password: string) {
     return this.http.get<User[]>(this.usersUrl).pipe(
-      map((users: User[]) => {
-        // Buscar el usuario en la lista
-        const user = users.find((u) => u.email === email && u.password === password);
+      map((users) => {
+        const user = users.find((user) => user.email === email);
 
         if (!user) {
-          // Si no existe, lanzamos un error
-          throw new Error('Credenciales inválidas');
+          throw new Error('Usuario no encontrado');
         }
 
-        // Guardamos el "token" (en tu caso el email)
-        this.setToken(user.email + '&' + user.password);
+        if (user.password !== password) {
+          throw new Error('Contraseña incorrecta');
+        }
 
-        // Actualizamos el store con el usuario autenticado
+        this.setToken(`${user.email}&${user.password}`);
         this.store.dispatch(setAuthUser({ payload: user }));
 
-        // Devolvemos el usuario como resultado del observable
         return user;
       })
     );
@@ -58,21 +57,17 @@ export class AuthService {
     this.router.navigate(['login']);
   }
 
-  setToken(token: string) {
-    localStorage.setItem('token', token);
+  setToken(email: string) {
+    localStorage.setItem('token', email);
   }
 
-  async isAuthenticated() {
+  isAuthenticated() {
     const token = localStorage.getItem('token');
-
-    const user = await firstValueFrom(this.user$);
-
-    console.log(user);
 
     if (!token) {
       return false;
     }
 
-    return user.email === token.split('&')[0];
+    return true;
   }
 }

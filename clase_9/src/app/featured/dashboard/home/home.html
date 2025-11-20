@@ -1,0 +1,28 @@
+<h1>Bienvenido {{ (user$ | async)?.username }}</h1>
+
+@if ((user$ | async)?.role === "ADMIN") {
+
+<div class="container-chart">
+  <mat-card class="example-card" appearance="outlined">
+    <mat-card-header>
+      <mat-card-title>Estadísticas de la Semana</mat-card-title>
+    </mat-card-header>
+    <img
+      mat-card-image
+      src="https://www.dannidanliu.com/content/images/2022/07/Blog-9--Feature.jpg"
+      alt="Photo of a Shiba Inu"
+    />
+    <mat-card-content>
+      <p>
+        En este análisis se muestra la evolución de las ventas de productos en la semana pasada. Se
+        puede observar que las ventas aumentaron en un 20% con respecto a la semana anterior.
+      </p>
+    </mat-card-content>
+    <mat-card-actions>
+      <button matButton>LIKE</button>
+      <button matButton>SHARE</button>
+    </mat-card-actions>
+  </mat-card>
+</div>
+
+}

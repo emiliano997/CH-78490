@@ -2,14 +2,12 @@ import { CanActivateFn, Router } from '@angular/router';
 import { AuthService } from '../../services/auth/auth';
 import { inject } from '@angular/core';
 
-export const loginGuard: CanActivateFn = async (route, state) => {
+export const loginGuard: CanActivateFn = (route, state) => {
   const authService = inject(AuthService);
 
   const router = inject(Router);
 
-  const isAuth = await authService.isAuthenticated();
-
-  if (isAuth) {
+  if (authService.isAuthenticated()) {
     router.navigate(['/dashboard']);
     return false;
   }
